@@ -69,7 +69,7 @@ export class Screen implements Pixels {
   }
   getIndexFromPoint (x: number, y: number) {
     if (!Number.isInteger(x) || x < 0 || !Number.isInteger(y) || y < 0) {
-      throw Error('Wrong parameter');
+      throw new Error('Wrong parameter');
     }
     return (y * this.imageData.width + x) * 4;
   }
@@ -85,9 +85,12 @@ export type OrgbValue = number;
 export type DeltaTime = number;
 
 export interface Pixels {
-  setPixel: (x: number, y: number, color: OrgbValue) => void;
-  getPixel: (x: number, y: number) => OrgbValue;
+  setPixel: SetPixel;
+  getPixel: GetPixel;
 }
+
+export type SetPixel = (x: number, y: number, color: OrgbValue) => void;
+export type GetPixel = (x: number, y: number) => OrgbValue | void;
 
 export class OrgbColor {
   readonly value: OrgbValue;
