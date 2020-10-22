@@ -118,4 +118,9 @@ export class OrgbColor {
   get g () { return (this.value & 0x0000ff00) >> 8;}
   get b () { return this.value & 0x000000ff;}
   get a () { return 255 - this.o;}
+
+  compose = (top: OrgbColor) => {
+    const a = top.a / 255;
+    return new OrgbColor((this.value & 0xffffff) * (1 - a) + (top.value & 0xffffff) * a);
+  }
 }
