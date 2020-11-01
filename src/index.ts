@@ -124,3 +124,26 @@ export class OrgbColor {
     return new OrgbColor((this.value & 0xffffff) * (1 - a) + (top.value & 0xffffff) * a);
   }
 }
+
+export enum LogLevel {
+  info,
+  warning,
+  error
+}
+
+interface Log {
+  minLevel: LogLevel,
+  appliedAreas?: any[],
+  (message: string, level?: LogLevel, area?: any): void;
+}
+
+export const log: Log = (message: string, level: LogLevel = LogLevel.info, area?: any) => {
+  if (log.minLevel < level) {
+    return;
+  }
+  if (log.appliedAreas && log.appliedAreas.indexOf(area) == -1) {
+    return;
+  }
+  console.log(message);
+};
+log.minLevel = LogLevel.info;
