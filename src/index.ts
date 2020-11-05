@@ -1,80 +1,3 @@
-export default function createGame(canvas: HTMLCanvasElement, update: Update) : Game {
-  const context = canvas.getContext('2d');
-  if (!context) {
-    throw Error('Wrong element, "canvas" expected');
-  }
-
-  let animationRequestId: number;
-  let screen: Screen;
-  let lastTime = Date.now();
-
-  function init() {
-    screen = new Screen(context!.createImageData(canvas.width, canvas.height));
-  }
-
-  function tick(): void {
-    const currTime = Date.now();
-    update({
-      delta: currTime - lastTime,
-      pixels: screen
-    });
-    context!.putImageData(screen.imageData, 0, 0);
-    lastTime = currTime;
-    animationRequestId = requestAnimationFrame(tick);
-  }
-
-  return {
-    stop: function () {
-      cancelAnimationFrame(animationRequestId);
-    },
-    start: function () {
-      init();
-      tick();
-    },
-    reinit: function () {
-      init();
-    }
-  }
-}
-
-export type Update = (params: UpdateParams) => void;
-
-export interface Game {
-  stop: () => void
-  start: () => void
-  reinit: () => void
-}
-
-export class Screen implements Pixels {
-  imageData: ImageData;
-  constructor (imageData: ImageData) {
-    this.imageData = imageData;
-  }
-  setPixel (x: number, y: number, color: OrgbValue) {
-    const c = new OrgbColor(color);
-    const index = this.getIndexFromPoint(x, y);
-    this.imageData.data[index] = c.r;
-    this.imageData.data[index + 1] = c.g;
-    this.imageData.data[index + 2] = c.b;
-    this.imageData.data[index + 3] = c.a ;
-  }
-  getPixel (x: number, y: number) {
-    const index = this.getIndexFromPoint(x, y);
-    return OrgbColor.fromRgba(
-      this.imageData.data[index],
-      this.imageData.data[index + 1],
-      this.imageData.data[index + 2],
-      this.imageData.data[index + 3]
-    ).value;
-  }
-  getIndexFromPoint (x: number, y: number) {
-    if (!Number.isInteger(x) || x < 0 || !Number.isInteger(y) || y < 0) {
-      throw new Error('Wrong parameter');
-    }
-    return (y * this.imageData.width + x) * 4;
-  }
-}
-
 export interface UpdateParams {
   delta: DeltaTime;
   pixels: Pixels;
@@ -123,6 +46,32 @@ export class OrgbColor {
     const a = top.a / 255;
     return new OrgbColor((this.value & 0xffffff) * (1 - a) + (top.value & 0xffffff) * a);
   }
+}
+
+export interface CameraResult {
+  moveCamera: MoveCamera;
+  pixels: Pixels;
+  draw: (setPixel: SetPixel) => void;
+  reset: () => void;
+  inBound: (position: {x: number, y: number}, size: {height: number, width: number}) => boolean;
+}
+export type MoveCamera = (_x: number, _y: number) => void;
+
+export interface Sprite {
+  width: number,
+  height: number,
+  pixels: Array<number>,
+}
+export interface SpriteMap {
+  sprites: Array<Sprite>,
+}
+
+export abstract class Asset<T> {
+  isLoading (): boolean {
+    return false;
+  }
+  data?: T;
+  abstract load: () => void;
 }
 
 export enum LogLevel {
