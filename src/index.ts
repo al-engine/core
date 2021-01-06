@@ -1,3 +1,23 @@
+export interface Size {
+  width: number;
+  height: number;
+}
+
+export interface Position {
+  x: number;
+  y: number;
+}
+
+export interface Vector {
+  x: number;
+  y: number;
+}
+
+export interface Space {
+  position: Position;
+  size: Size;
+}
+
 export interface UpdateParams {
   delta: DeltaTime;
   pixels: Pixels;
