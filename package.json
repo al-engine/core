@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -29,7 +29,8 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "core",
+  "name": "@al-engine/core",
+  "description": "Minimalistic game engine, for pixel perfect games",
   "author": "zhesha",
   "module": "dist/core.esm.js",
   "devDependencies": {
