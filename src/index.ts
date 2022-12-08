@@ -124,7 +124,7 @@ export const log: Log = (
   level: LogLevel = LogLevel.info,
   area?: any
 ) => {
-  if (log.minLevel < level) {
+  if (log.minLevel >= level) {
     return;
   }
   if (log.appliedAreas && log.appliedAreas.indexOf(area) === -1) {
