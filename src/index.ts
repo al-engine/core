@@ -79,6 +79,7 @@ export class OrgbColor {
 }
 
 export interface CameraResult {
+  getPosition: () => Position;
   moveCamera: MoveCamera;
   pixels: Pixels;
   draw: (setPixel: SetPixel) => void;
